@@ -5,47 +5,16 @@
 #include "mbed.h"
 
 const uint16_t STRING_LENGTH = 20U;
-    uint8_t buffer[20];
+uint8_t buffer[20];
 
-    size_t message_length;
-    bool status;
-    char testString[STRING_LENGTH];
-
-pb_callback_t f_callbackEncode;
-pb_callback_t f_callbackDecode;
-
-static bool _decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
-{
-    bool retVal;
-    uint16_t length = stream->bytes_left;
-    retVal = pb_read(stream, ((pb_byte_t*)testString), length);
-    return retVal ;
-}
-static bool _encode_string(pb_ostream_t *stream, const pb_field_t *field, void * const *arg)
-{
-    bool retVal = true;
-    do
-    {
-        retVal = pb_encode_tag_for_field(stream, field);
-        if (retVal == false)
-        {
-            break;
-        }
-        retVal = pb_encode_string(stream, (const pb_byte_t*)testString, STRING_LENGTH);
-        if (retVal == false)
-        {
-            break;
-        }
-    } while (0);
-    return retVal ;
-}
-
+size_t message_length;
+bool status;
+char testString[STRING_LENGTH];
 
 static bool _receive_data(void)
 {
     /* Allocate space for the decoded message. */
     SimpleMessage message = SimpleMessage_init_zero;
-    message.test_string = f_callbackEncode;
 
     /* Create a stream that reads from the buffer. */
     pb_istream_t stream = pb_istream_from_buffer(buffer, message_length);
@@ -61,7 +30,6 @@ static bool _receive_data(void)
 
     return true;
 }
-
 
 static bool _send_data(void)
 {
@@ -79,7 +47,7 @@ static bool _send_data(void)
 
     message.test_uint32 = 1;
     message.test_uint64 = 2;
-    message.test_string = f_callbackDecode;
+    memcpy(message.test_string,testString,20);
 
     /* Now we are ready to encode the message! */
     status = pb_encode(&stream, SimpleMessage_fields, &message);
@@ -97,8 +65,6 @@ int main()
 {
     while (1)
     {
-        f_callbackEncode.funcs.encode = &_encode_string;
-        f_callbackDecode.funcs.decode = &_decode_string;
 
         _send_data();
         _receive_data();
