@@ -16,11 +16,28 @@ pb_callback_t f_callbackDecode;
 
 static bool _decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
 {
-    return true;
+    bool retVal;
+    uint16_t length = stream->bytes_left;
+    retVal = pb_read(stream, ((pb_byte_t*)testString), length);
+    return retVal ;
 }
 static bool _encode_string(pb_ostream_t *stream, const pb_field_t *field, void * const *arg)
 {
-    return true;
+    bool retVal = true;
+    do
+    {
+        retVal = pb_encode_tag_for_field(stream, field);
+        if (retVal == false)
+        {
+            break;
+        }
+        retVal = pb_encode_string(stream, (const pb_byte_t*)testString, STRING_LENGTH);
+        if (retVal == false)
+        {
+            break;
+        }
+    } while (0);
+    return retVal ;
 }
 
 
