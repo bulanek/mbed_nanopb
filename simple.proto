@@ -3,11 +3,17 @@
 syntax = "proto2";
 import  "nanopb.proto";
 
+message SimpleSubMessage
+{
+    optional uint32 test = 6;
+}
+
 
 message SimpleMessage {
     required uint32 test_uint32 =2;
     required uint64 test_uint64 =3;
     required float  test_float = 4;
     required string test_string = 5 [(nanopb).max_length = 20];
+    required SimpleSubMessage test_sub_message = 7;
 }
 

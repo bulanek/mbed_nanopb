@@ -1,0 +1,98 @@
+{
+    "macros": [       
+        "MBED_CONF_RETARGET_STDIO_SEGGER_RTT",
+        "xMBED_CONF_RETARGET_STDIO_SERIAL",
+        
+        "xNDEBUG",
+        "xZBOX_UART_FREE_DEBUG",
+        "xZBOX_MODEM_OOB_ERROR_DEBUG",
+        
+        "xZBOX_MODEM_SIM800_QUICK_SEND_MODE_DISABLE",
+        "ZBOX"
+    ],
+    "config": { 
+        "lf_clock_xtal_accuracy": {
+            "value": "NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM",
+            "macro_name": "MBED_CONF_NORDIC_LF_CLOCK_XTAL_ACCURACY"
+        }       
+    }, 
+    "target_overrides": {
+        "P_ECB_BOARD": {
+            "target.macros_add": ["DEBUG_TYPE=1"],
+            "target.features_add": ["BLE"],
+
+            "target.lf_clock_src": "NRF_LF_SRC_XTAL",
+
+            "cordio.max-connections": 4,
+            "ble.ble-role-observer": false,
+            "ble.ble-role-central": false,
+            "ble.ble-role-peripheral": true,
+            "ble.ble-feature-extended-advertising": true,
+            "ble.ble-feature-periodic-advertising": true,            
+            "ble.ble-gap-max-advertising-sets": 2,
+            "ble.ble-feature-privacy": true,
+            "ble.ble-feature-whitelist": false,
+            "ble.ble-security-database-filesystem": false,
+            "ble.ble-security-database-kvstore": false,
+            "ble.ble-gap-host-based-private-address-resolution": false,
+
+            "rtos.main-thread-stack-size": 4096,
+            "rtos.thread-stack-size": 4096,            
+            
+            "target.console-uart": false,
+            "target.console-uart-flow-control": null,
+            "platform.stdio-minimal-console-only": false,
+
+            "platform.crash-capture-enabled": false,
+            "platform.fatal-error-auto-reboot-enabled": true,
+            "platform.error-reboot-max": 100
+        },
+        "CH_ECB_BOARD": {
+            "target.macros_add": ["DEBUG_TYPE=1"],
+            "target.features_add": ["BLE"],
+            "target.components_add": ["SD"],
+            
+            "target.lf_clock_src": "NRF_LF_SRC_XTAL",   
+
+            "cordio.max-connections": 2,
+            "ble.ble-role-observer": false,
+            "ble.ble-role-central": false,
+            "ble.ble-role-peripheral": true,
+            "ble.ble-feature-extended-advertising": true,
+            "ble.ble-feature-periodic-advertising": true,            
+            "ble.ble-gap-max-advertising-sets": 2,
+            "ble.ble-feature-privacy": false,
+            "ble.ble-feature-whitelist": false,
+            "ble.ble-security-database-filesystem": false,
+            "ble.ble-security-database-kvstore": false,
+            "ble.ble-gap-host-based-private-address-resolution": false,
+
+            "sd.SPI_MOSI":  "SDC_MOSI",
+            "sd.SPI_MISO":  "SDC_MISO",
+            "sd.SPI_CLK":   "SDC_SCK",
+            "sd.SPI_CS":    "SDC_CS",
+
+            "drivers.uart-serial-rxbuf-size": 256,
+            "drivers.uart-serial-txbuf-size": 256,
+            
+            "rtos.idle-thread-stack-size": 512,
+            "rtos.timer-thread-stack-size": 768,
+            "rtos.main-thread-stack-size": 1536,
+            "rtos.thread-stack-size": 2560,
+
+            "target.console-uart": false,
+            "target.console-uart-flow-control": null,
+            "platform.stdio-minimal-console-only": false,
+
+            "platform.crash-capture-enabled": false,
+            "platform.fatal-error-auto-reboot-enabled": true,
+            "platform.error-reboot-max": 100             
+        },        
+        "*": {
+            "platform.heap-stats-enabled": true,
+            "platform.stack-stats-enabled": true,
+            "platform.thread-stats-enabled": true,
+            "platform.memory-tracing-enabled": false
+        }
+    }
+}

@@ -11,13 +11,27 @@ size_t message_length;
 bool status;
 char testString[STRING_LENGTH];
 
+/* This callback function will be called once for each filename received
+ * from the server. The filenames will be printed out immediately, so that
+ * no memory has to be allocated for them.
+ */
+bool SimpleMessage_callback(pb_ostream_t *stream, const pb_field_t *field, void * const *arg)
+{
+    static int counter = 0;
+    ++counter;
+    
+    return true;
+}
+
 static bool _receive_data(void)
 {
     /* Allocate space for the decoded message. */
     SimpleMessage message = SimpleMessage_init_zero;
 
+
     /* Create a stream that reads from the buffer. */
     pb_istream_t stream = pb_istream_from_buffer(buffer, message_length);
+        
 
     /* Now we are ready to decode the message. */
     status = pb_decode(&stream, SimpleMessage_fields, &message);
@@ -27,6 +41,7 @@ static bool _receive_data(void)
     {
         return false;
     }
+
 
     return true;
 }
@@ -47,7 +62,10 @@ static bool _send_data(void)
 
     message.test_uint32 = 1;
     message.test_uint64 = 2;
-    memcpy(message.test_string,testString,20);
+    message.test_string.funcs.encode = SimpleMessage_callback;
+    message.test_sub_message.funcs.encode = SimpleMessage_callback;
+
+    //memcpy(message.test_string,testString,20);
 
     /* Now we are ready to encode the message! */
     status = pb_encode(&stream, SimpleMessage_fields, &message);
